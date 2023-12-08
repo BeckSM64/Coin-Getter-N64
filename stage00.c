@@ -4,8 +4,8 @@
 #define CheckController(cont) (contPattern & (1<<(cont)))
 
 typedef struct {
-	u16 posX;
-	u16 posY;
+	s16 posX;
+	s16 posY;
 	u16 sizeX;
 	u16 sizeY;
 	s8 velX;
@@ -100,12 +100,16 @@ void MoveSquare(Square *square) {
 void CheckScreenCollision(Square *square) {
 	
 	// Check if square hit left or right side of screen
-	if ( (square->posX <= 0) || ((square->posX + square->sizeX) >= SCREEN_WD) ) {
-		square->velX *= -1; // Reverse velocity, square bounced off left or right of screen
+	if ( (square->posX < 0) ) {
+		square->posX = 0;
+	} else if ((square->posX + square->sizeX) >= SCREEN_WD) {
+		square->posX = SCREEN_WD - square->sizeX;
 	}
 	
 	// Check if square hit top or bottom of screen
-	if ( (square->posY <= 0) || ((square->posY + square->sizeY) >= SCREEN_HT) ) {
-		square->velY *= -1;
+	if ( (square->posY < 0) ) {
+		square->posY = 0;
+	} else if ((square->posY + square->sizeY) >= SCREEN_HT) {
+		square->posY = SCREEN_HT - square->sizeY;
 	}
 }
