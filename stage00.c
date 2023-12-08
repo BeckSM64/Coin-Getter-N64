@@ -14,14 +14,14 @@ typedef struct {
 
 // Globals
 static u8 b;
-static Square square = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 25, 25, 0, 0 }; // Player object
+static Square player = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 25, 25, 0, 0 }; // Player object
 static Square enemy = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 10, 10, 1, 1 }; // Enemy object
 
 void ClearBackground(u8 r, u8 g, u8 b);
 void CreateSquare(u8 r, u8 g, u8 b, Square *square);
 void MoveSquare(Square *square);
 void MoveEnemy(Square *enemy);
-void CheckScreenCollision(Square *square);
+void CheckPlayerScreenCollision(Square *square);
 void CheckEnemyScreenCollision(Square *enemy);
 
 void stage00_init(void) {
@@ -31,9 +31,9 @@ void stage00_init(void) {
 void stage00_update(void) {
 	nuContDataGetExAll(contdata);
 	b -=5; // Because this is unsigned, -5 will wrap around to 250
-	MoveSquare(&square); // Update the position of the player
+	MoveSquare(&player); // Update the position of the player
 	MoveEnemy(&enemy); // Update the position of the enemy
-	CheckScreenCollision(&square); // Check for collision with wall and square
+	CheckPlayerScreenCollision(&player); // Check for collision with wall and player
 	CheckEnemyScreenCollision(&enemy); // Check for collision between wall and enemy
 }
 
@@ -43,7 +43,7 @@ void stage00_draw(void) {
     // ClearBackground(0, 0, 255); // Clear background to blue
 	ClearBackground(0, 0, b); // Change background color to test not crashing
 	
-	CreateSquare(255, 0, 0, &square); // Create red square on screen
+	CreateSquare(255, 0, 0, &player); // Create red square for player on screen
 	
 	CreateSquare(0, 255, 0, &enemy); // Create enemy square on screen
 
@@ -109,7 +109,7 @@ void MoveEnemy(Square *enemy) {
 	enemy->posY += enemy->velY;
 }
 
-void CheckScreenCollision(Square *square) {
+void CheckPlayerScreenCollision(Square *square) {
 	
 	// Check if square hit left or right side of screen
 	if ( (square->posX < 0) ) {
