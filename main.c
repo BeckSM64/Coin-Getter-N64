@@ -1,5 +1,5 @@
 #include <nusys.h>
-#include "stage00.h"
+#include "assets/stages/stage00.h"
 #include "config.h"
 
 #define CheckController(cont) (contPattern & (1<<(cont)))

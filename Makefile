@@ -1,7 +1,8 @@
 N64KITDIR   = c:/nintendo/n64kit
  
-TARGET  	= pyoro
-CODEFILES   = main.c graphic.c stage00.c player_sprite.c
+TARGET  	= coingetter
+CODEFILES   = main.c graphic.c
+OBJECTFILES = assets/include/sprites.o assets/include/stages.o
 
 include $(ROOT)/usr/include/make/PRdefs
  
@@ -13,7 +14,7 @@ NUSYSINC	= $(NUSYSDIR)/include
 NUSYSLIB	= $(NUSYSDIR)/lib
  
 NUOBJ   	= $(NUSYSLIB)/nusys.o
-CODEOBJECTS = $(CODEFILES:.c=.o) $(NUOBJ)
+CODEOBJECTS = $(CODEFILES:.c=.o) $(NUOBJ) $(OBJECTFILES)
  
 CUSTFLAGS   =
 LCINCS  	= -I$(NUSYSINC)

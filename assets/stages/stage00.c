@@ -1,6 +1,6 @@
 #include <nusys.h>
-#include "config.h"
-#include "player_sprite.h"
+#include "../../config.h"
+#include "../sprites/player_sprite.h"
 
 #define CheckController(cont) (contPattern & (1<<(cont)))
 
