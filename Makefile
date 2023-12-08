@@ -1,7 +1,7 @@
 N64KITDIR   = c:/nintendo/n64kit
  
 TARGET  	= pyoro
-CODEFILES   = main.c graphic.c stage00.c 
+CODEFILES   = main.c graphic.c stage00.c player_sprite.c
 
 include $(ROOT)/usr/include/make/PRdefs
  
