@@ -1,6 +1,6 @@
 N64KITDIR	= c:\nintendo\n64kit
  
-CODEFILES	= player_sprite.c
+CODEFILES	= player_sprite.c enemy_sprite.c
 OBJECTNAME	= sprites
 
 NUSYSINCDIR	= $(N64KITDIR)\nusys\include

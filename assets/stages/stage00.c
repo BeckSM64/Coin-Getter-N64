@@ -1,6 +1,7 @@
 #include <nusys.h>
 #include "../../config.h"
 #include "../sprites/player_sprite.h"
+#include "../sprites/enemy_sprite.h"
 
 #define CheckController(cont) (contPattern & (1<<(cont)))
 
@@ -16,7 +17,7 @@ typedef struct {
 // Globals
 static u8 b;
 static Square player = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 16, 16, 0, 0 }; // Player object
-static Square enemy = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 10, 10, 1, 1 }; // Enemy object
+static Square enemy = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 16, 16, 1, 1 }; // Enemy object
 
 void ClearBackground(u8 r, u8 g, u8 b);
 void CreateSquare(u8 r, u8 g, u8 b, Square *square);
@@ -25,6 +26,7 @@ void MoveEnemy(Square *enemy);
 void CheckPlayerScreenCollision(Square *square);
 void CheckEnemyScreenCollision(Square *enemy);
 void DrawPlayer(Square *player);
+void DrawEnemy(Square *enemy);
 
 void stage00_init(void) {
 	b = 255;
@@ -47,9 +49,10 @@ void stage00_draw(void) {
 	
 	//CreateSquare(255, 0, 0, &player); // Create red square for player on screen
 	
-	CreateSquare(0, 255, 0, &enemy); // Create enemy square on screen
+	//CreateSquare(0, 255, 0, &enemy); // Create enemy square on screen
 	
 	DrawPlayer(&player); // Draw the player sprite
+	DrawEnemy(&enemy); // Draw the enemy sprite
 
     gDPFullSync(glistp++);
     gSPEndDisplayList(glistp++);
@@ -169,6 +172,30 @@ void DrawPlayer(Square *player) {
     gSPTextureRectangle(glistp++, 
         player->posX << 2, player->posY << 2, 
         (player->posX + player->sizeX) << 2, (player->posY + player->sizeY) << 2,
+        G_TX_RENDERTILE, 
+        0 << 5, 0 << 5, 
+        1 << 10, 1 << 10);
+    gDPPipeSync(glistp++);
+}
+
+void DrawEnemy(Square *enemy) {
+
+	gDPSetCycleType(glistp++, G_CYC_1CYCLE);
+    gDPSetCombineMode(glistp++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+    gDPSetRenderMode(glistp++, G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE);
+    gDPSetDepthSource(glistp++, G_ZS_PRIM);
+    gDPSetPrimDepth(glistp++, 0, 0);
+    gDPSetTexturePersp(glistp++, G_TP_NONE);
+    gDPLoadTextureBlock(glistp++,
+        enemy_sprite, 
+        G_IM_FMT_RGBA, G_IM_SIZ_16b, 
+        16, 16, 0, 
+        G_TX_WRAP, G_TX_WRAP, 
+        G_TX_NOMASK, G_TX_NOMASK, 
+        G_TX_NOLOD, G_TX_NOLOD);
+    gSPTextureRectangle(glistp++, 
+        enemy->posX << 2, enemy->posY << 2, 
+        (enemy->posX + enemy->sizeX) << 2, (enemy->posY + enemy->sizeY) << 2,
         G_TX_RENDERTILE, 
         0 << 5, 0 << 5, 
         1 << 10, 1 << 10);
