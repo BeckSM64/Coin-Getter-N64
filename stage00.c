@@ -1,6 +1,8 @@
 #include <nusys.h>
 #include "config.h"
 
+#define CheckController(cont) (contPattern & (1<<(cont)))
+
 typedef struct {
 	u16 posX;
 	u16 posY;
@@ -12,11 +14,11 @@ typedef struct {
 
 // Globals
 static u8 b;
-static Square square = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 25, 25, -1, 1 };
+static Square square = { (SCREEN_WD / 2) - (64 / 2), (SCREEN_HT / 2) - (64 / 2), 25, 25, 0, 0 };
 
 void ClearBackground(u8 r, u8 g, u8 b);
 void CreateSquare(u8 r, u8 g, u8 b, Square *square);
-void MoveSquare(Square *square, u16 posX, u16 posY);
+void MoveSquare(Square *square);
 void CheckScreenCollision(Square *square);
 
 void stage00_init(void) {
@@ -24,9 +26,10 @@ void stage00_init(void) {
 }
 
 void stage00_update(void) {
-	b -=5; // because this is unsigned, -5 will wrap around to 250
-	MoveSquare(&square, square.posX + square.velX, square.posY + square.velY);
-	CheckScreenCollision(&square);
+	nuContDataGetExAll(contdata);
+	b -=5; // Because this is unsigned, -5 will wrap around to 250
+	MoveSquare(&square); // Update position of the square
+	CheckScreenCollision(&square); // Check for collision with wall and square
 }
 
 void stage00_draw(void) {
@@ -65,9 +68,33 @@ void CreateSquare(u8 r, u8 g, u8 b, Square *square) {
     gDPPipeSync(glistp++);
 }
 
-void MoveSquare(Square *square, u16 posX, u16 posY) {
-	square->posX = posX;
-	square->posY = posY;
+void MoveSquare(Square *square) {
+	
+	// Check if controller 1 is plugged in
+	//if (CheckController(1) == 1) {
+		
+		// Check if analog x direction is being held, update velocity accordingly
+		if ( contdata[0].stick_x > 16 ) {
+			square->velX = 1; // Fixed velocity for now
+		} else if ( contdata[0].stick_x < -16 ) {
+			square->velX = -1; // Fixed velocity for now
+		} else {
+			square->velX = 0; // Stop moving
+		}
+		
+		// Check if analog y direction is being held, update velocity accordingly
+		if ( contdata[0].stick_y > 16 ) {
+			square->velY = -1; // Fixed velocity for now
+		} else if ( contdata[0].stick_y < -16 ) {
+			square->velY = 1; // Fixed velocity for now
+		} else {
+			square->velY = 0; // Stop moving
+		}
+	//}
+	
+	// Update square position
+	square->posX += square->velX;
+	square->posY += square->velY;
 }
 
 void CheckScreenCollision(Square *square) {
