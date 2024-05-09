@@ -5,6 +5,8 @@ OBJECTNAME	= sprites
 
 NUSYSINCDIR	= $(N64KITDIR)\nusys\include
 NUSYSLIBDIR	= $(N64KITDIR)\nusys\lib
+NUSTDINCDIR  = $(N64KITDIR)\nustd\include
+NUSTDLIBDIR  = $(N64KITDIR)\nustd\lib
 NUSTDINC 	= $(N64KITDIR)\nustd\include
 NUSTDLIB 	= $(N64KITDIR)\nustd\lib
  
